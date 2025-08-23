@@ -8,25 +8,28 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebServlet(urlPatterns = {"/hi","/home","/trangchu"})
+@WebServlet(urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		resp.setContentType("text/html");
-		
-		String name = req.getParameter("ten");
-		
-		String holot = req.getParameter("holot");
-
-		
-		PrintWriter out = resp.getWriter();
-		
-		out.println("Hello world!" + name + " " + holot);
-		
-		out.close();
+		response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		if (username.equals("duy")&& password.equals("123")) {
+		out.print("Chào mừng bạn, " + username);
+		HttpSession session = request.getSession();
+		session.setAttribute("name", username);
+		} else {
+		out.print("Tài khoản hoặc mật khẩu không chính xác");
+		request.getRequestDispatcher("Login.html").include(request,
+		response);
+		}
 	}
 }

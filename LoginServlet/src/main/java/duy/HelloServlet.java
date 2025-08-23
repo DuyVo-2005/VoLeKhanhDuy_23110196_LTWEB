@@ -1,38 +1,37 @@
 package duy;
 
 import java.io.IOException;
+//import java.io.PrintWriter;
 import java.io.PrintWriter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns= {"/hello","/xin-chao"})
-public class HelloServlet extends HttpServlet{
-	private static final long serialVersionUID = 1L;
-	
+public class HelloServlet extends HttpServlet {
+	//private static final long serialVersionUID = 1L;
+
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-	IOException {
-	resp.setContentType("text/html");
-	//lấy dữ liệu từ tham số của form
-	String user = req.getParameter("username");
-	String pass = req.getParameter("password");
-	if(user.equals("trung") && pass.equals("123"))
-	{
-	Cookie cookie = new Cookie("username", user); //khởi tạo cookie
-	//thiết lập thời gian tồn tại 30s của cookie
-	cookie.setMaxAge(30);
-	//thêm cookie vào response
-	resp.addCookie(cookie);
-	//chuyển sang trang HelloServlet
-	resp.sendRedirect("/HelloServlet/hello");
-	}else {
-	//chuyển sang trang LoginServlet
-	resp.sendRedirect("/HelloServlet/login");
-	}}
-
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		resp.setContentType("text/html");
+		PrintWriter printWriter = resp.getWriter();
+		String name = "";
+		// Nhận cookie
+		Cookie[] cookie = req.getCookies();
+		for (Cookie c : cookie) {
+			if (c.getName().equals("username")) {
+				name = c.getValue();
+			}
+		}
+		if (name.equals("")) {
+			// chuyển sang trang LoginServlet
+			resp.sendRedirect("/LoginServlet/login");
+		}
+		// hiển thị lên trang bằng đối tượng PrintWriter()
+		printWriter.println("Xin chao " + name);
+	}
 }
-
