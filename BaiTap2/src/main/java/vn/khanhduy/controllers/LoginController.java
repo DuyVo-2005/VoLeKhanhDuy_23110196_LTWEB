@@ -43,8 +43,8 @@ public class LoginController extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 
 		// lay tham so tu view
-		String username = req.getParameter("username");
-		String password = req.getParameter("password");
+		String username = req.getParameter("uname");
+		String password = req.getParameter("psw");
 		String remember = req.getParameter("remember");
 
 		// kiem tra tham so
@@ -71,6 +71,7 @@ public class LoginController extends HttpServlet {
 			resp.sendRedirect(req.getContextPath() + "/waiting");// controller waiting phan chia giao dien (user,
 																	// admin,...)
 		} else {
+			System.out.println(username+password);
 			alertMsg = "Tài khoản hoặc mật khẩu không đúng";
 			req.setAttribute("alert", alertMsg);
 			req.getRequestDispatcher("/views/login.jsp").forward(req, resp);

@@ -20,6 +20,7 @@ public class DbConnection {
 		return (Connection) DriverManager.getConnection(url, userID, password);
 	}
 
+	//test: chuot phai -> run as -> java app
 	public static void main(String[] args) {
 		try {
 			System.out.println(new DbConnection().getConnection());
