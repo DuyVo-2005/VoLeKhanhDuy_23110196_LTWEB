@@ -10,7 +10,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Login</title>
 </head>
 <body>
 	<form action="/BaiTap2/login" method="post">
@@ -32,7 +32,7 @@
 
 		<div class="container" style="background-color: #f1f1f1">
 			<button type="button" class="cancelbtn">Cancel</button>
-			<span class="psw">Forgot <a href="#">password?</a></span>
+			<span class="psw">Forgot <a href="${pageContext.request.contextPath }/views/forgotpassword.jsp">password?</a></span>
 		</div>
 	</form>
 	<%-- 	<form action="/Buoi3_bt1/login" method="post">

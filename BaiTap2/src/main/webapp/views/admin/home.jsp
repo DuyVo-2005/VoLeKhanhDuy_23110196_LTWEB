@@ -8,5 +8,6 @@
 </head>
 <body>
 	Trang chu admin
+	<a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
 </body>
 </html>

@@ -27,8 +27,7 @@ public class RegisterController extends HttpServlet {
 													// session nào tồn tại cho client này, thì tạo mới một session và
 													// trả về.
 		if (session != null && session.getAttribute("username") != null) {
-			// resp.sendRedirect(req.getContextPath() + "/admin");//?
-			resp.sendRedirect(req.getContextPath() + "/admin");// ?
+			resp.sendRedirect(req.getContextPath() + "/admin");//?
 			return;
 		}
 	}
@@ -56,7 +55,7 @@ public class RegisterController extends HttpServlet {
 			req.getRequestDispatcher(Constant.REGISTER).forward(req, resp);
 			return;
 		}
-		boolean isSuccess = service.register(username, password, email, fullname, phone);
+		boolean isSuccess = service.register(email, password, username, fullname, phone);
 		if (isSuccess) {
 			// SendMail sm = new SendMail();
 			// sm.sendMail(email, "shopping.khanhduy.vn", "Welcome to Shopping. Please Login

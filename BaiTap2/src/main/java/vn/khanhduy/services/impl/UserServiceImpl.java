@@ -30,7 +30,7 @@ public class UserServiceImpl implements IUserService {
 		}
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
-		userDao.insert(new UserModel(email, username, fullname, password, null, 5, phone, date));
+		userDao.insert(new UserModel(username, password, fullname, email, null, 1, phone, date));
 		return true;
 	}
 
