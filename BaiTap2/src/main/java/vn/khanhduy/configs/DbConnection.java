@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 
 public class DbConnection {
 	private final String serverName = "";
-	private final String dbName = "ltwebs56";
+	private final String dbName = "ServletCRUDMVC";
 	private final String portNumber = "1433";
 	private final String instance = "SQLEXPRESS";
 	private final String userID = "sa";
