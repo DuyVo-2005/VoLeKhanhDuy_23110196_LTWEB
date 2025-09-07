@@ -34,6 +34,7 @@ public class CategoryDAOImpl extends DbConnection implements CategoryDAO {
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, category.getCatename());
 			ps.setString(2, category.getIcon());
+			ps.setInt(3, category.getCateid());
 			ps.executeUpdate();
 
 		} catch (Exception e) {

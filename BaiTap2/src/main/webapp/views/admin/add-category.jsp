@@ -7,8 +7,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form role="form" action="add" method="post"
-		enctype="multipart/form-data">
+	<form role="form" action="${pageContext.request.contextPath}/admin/category/add" 
+      method="post" enctype="multipart/form-data">
 		<div class="form-group">
 			<label>Tên danh mục:</label> <input class="form-control"
 				placeholder="please enter category Name" name="name" />

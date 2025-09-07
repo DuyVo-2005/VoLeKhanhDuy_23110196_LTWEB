@@ -1,20 +1,26 @@
 package vn.khanhduy.controllers.admin.category;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import org.apache.commons.fileupload2.core.DiskFileItemFactory;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import vn.khanhduy.models.CategoryModel;
 import vn.khanhduy.services.ICategoryService;
 import vn.khanhduy.services.impl.CategoryServiceImpl;
+import vn.khanhduy.utils.Constant;
 
 @WebServlet(urlPatterns = { "/admin/category/add" })
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+		maxFileSize = 1024 * 1024 * 10, // 10MB
+		maxRequestSize = 1024 * 1024 * 50)
 public class CategoryAddController extends HttpServlet {
 	/**
 	 * 
@@ -30,25 +36,49 @@ public class CategoryAddController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		/*
-		 * CategoryModel category = new CategoryModel(); DiskFileItemFactory
-		 * diskFileItemFactory = new DiskFileItemFactory(); ServletFileUpload
-		 * servletFileUpload = new ServletFileUpload(diskFileItemFactory);
-		 * servletFileUpload.setHeaderEncoding("UTF-8"); try {
-		 * resp.setContentType("text/html"); resp.setCharacterEncoding("UTF-8");
-		 * req.setCharacterEncoding("UTF-8"); List<FileItem> items =
-		 * servletFileUpload.parseRequest(req); for (FileItem item : items) { if
-		 * (item.getFieldName().equals("name")) {
-		 * category.setName(item.getString("UTF-8")); } else if
-		 * (item.getFieldName().equals("icon")) { String originalFileName =
-		 * item.getName(); int index = originalFileName.lastIndexOf("."); String ext =
-		 * originalFileName.substring(index + 1); String fileName =
-		 * System.currentTimeMillis() + "." + ext; File file = new File(Constant.DIR +
-		 * "/category/" + fileName); item.write(file); category.setIcon("category/" +
-		 * fileName); } } cateService.insert(category);
-		 * resp.sendRedirect(req.getContextPath() + "/admin/category/list"); } catch
-		 * (FileUploadException e) { e.printStackTrace(); } catch (Exception e) {
-		 * e.printStackTrace(); }
-		 */
+	    CategoryModel category = new CategoryModel();
+
+	    File uploadDir = new File(Constant.UPLOAD_DIR);
+	    if (!uploadDir.exists()) uploadDir.mkdirs();
+
+	    try {
+	        resp.setContentType("text/html");
+	        resp.setCharacterEncoding("UTF-8");
+	        req.setCharacterEncoding("UTF-8");
+
+	        // Lấy tên category từ form
+	        category.setCatename(req.getParameter("name"));
+
+	        String fileName = "";
+	        String newFileName = "";
+	        for (Part part : req.getParts()) {
+	            fileName = getFileName(part);
+	            if (fileName != null && !fileName.isEmpty()) {
+	                String uploadPath = Constant.UPLOAD_DIR + File.separator + "category";
+	                File uploadDirCategory = new File(uploadPath);
+	                if (!uploadDirCategory.exists()) uploadDirCategory.mkdirs();
+	                
+	                // Tạo tên mới tránh trùng
+	                String ext = fileName.substring(fileName.lastIndexOf("."));
+	                newFileName = System.currentTimeMillis() + ext;
+
+	                part.write(uploadPath + File.separator + newFileName);
+	                category.setIcon("category/" + newFileName);
+	            }
+	        }
+
+	        req.setAttribute("message", "File " + newFileName + " uploaded successfully!");
+	        cateService.insert(category);
+	        resp.sendRedirect(req.getContextPath() + "/admin/category/list");
+	    } catch (FileNotFoundException fne) {
+	        req.setAttribute("message", "There was an error: " + fne.getMessage());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
+
+	private String getFileName(Part part) {
+	    return part.getSubmittedFileName();
+	}
+
 }

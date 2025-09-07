@@ -11,10 +11,10 @@
 	<c:url value="/admin/category/edit" var="edit"></c:url>
 	<form role="form" action="${edit}" method="post"
 		enctype="multipart/form-data">
-		<input name="id" value="${category.id }" hidden="">
+		<input name="cateid" value="${category.cateid }" hidden="">
 		<div class="form-group">
 			<label>Tên danh sách:</label> <input type="text" class="form-control"
-				value="${category.name }" name="name" />
+				value="${category.catename }" name="catename" />
 		</div>
 		<div class="form-group">
 			<c:url value="/image?fname=${category.icon }" var="imgUrl"></c:url>
