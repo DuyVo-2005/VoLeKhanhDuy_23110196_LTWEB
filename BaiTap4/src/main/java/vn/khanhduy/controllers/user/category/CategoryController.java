@@ -20,11 +20,11 @@ import vn.khanhduy.services.ICategoryService;
 import vn.khanhduy.services.impl.CategoryServiceImpl;
 import vn.khanhduy.utils.Constant;
 
-@WebServlet(urlPatterns = { "/user/home", "/user/add", "/user/edit", "/user/delete"})
+@WebServlet(urlPatterns = { "/user/home", "/user/add", "/user/edit", "/user/delete" })
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-maxFileSize = 1024 * 1024 * 10, // 10MB
-maxRequestSize = 1024 * 1024 * 50)
-public class CategoryController extends HttpServlet{
+		maxFileSize = 1024 * 1024 * 10, // 10MB
+		maxRequestSize = 1024 * 1024 * 50)
+public class CategoryController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	ICategoryService cateService = new CategoryServiceImpl();
 
@@ -125,10 +125,18 @@ public class CategoryController extends HttpServlet{
 
 	protected void doGetEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String id = req.getParameter("id");
+		HttpSession session = req.getSession();
+		Users currentUser = (Users) session.getAttribute("USERMODEL");// user đang login
 		Category category = cateService.findById(Integer.parseInt(id));
-		req.setAttribute("category", category);
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/edit-category.jsp");
-		dispatcher.forward(req, resp);
+
+		if (category != null && category.getUser().getId() == currentUser.getId()) {
+			req.setAttribute("category", category);
+			RequestDispatcher dispatcher = req.getRequestDispatcher("/views/user/edit-category.jsp");
+			dispatcher.forward(req, resp);
+		} else {
+			// Không có quyền chỉnh sửa
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền chỉnh sửa category này!");
+		}
 	}
 
 	protected void doPostEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -176,7 +184,15 @@ public class CategoryController extends HttpServlet{
 
 	protected void doGetDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String id = req.getParameter("id");
-		cateService.delete(Integer.parseInt(id));
-		resp.sendRedirect(req.getContextPath() + "/user/home");
+		HttpSession session = req.getSession();
+		Category category = cateService.findById(Integer.parseInt(id));
+		Users currrentUser = (Users) session.getAttribute("USERMODEL");
+
+		if (id != null && category.getUser().getId() == currrentUser.getId()) {
+			cateService.delete(Integer.parseInt(id));
+			resp.sendRedirect(req.getContextPath() + "/user/home");
+		} else {
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền xóa category này!");
+		}
 	}
 }

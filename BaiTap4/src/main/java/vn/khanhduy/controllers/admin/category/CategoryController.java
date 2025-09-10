@@ -129,8 +129,9 @@ public class CategoryController extends HttpServlet {
 
 		String id = req.getParameter("id");
 		HttpSession session = req.getSession();
-		Users currentUser = (Users) session.getAttribute("USERMODEL");//user đang login
-		//Users currentUser = (Users) SessionUtil.getInstance().getValue(req, "USERMODEL");
+		Users currentUser = (Users) session.getAttribute("USERMODEL");// user đang login
+		// Users currentUser = (Users) SessionUtil.getInstance().getValue(req,
+		// "USERMODEL");
 
 		Category category = cateService.findById(Integer.parseInt(id));
 
@@ -139,7 +140,7 @@ public class CategoryController extends HttpServlet {
 			RequestDispatcher dispatcher = req.getRequestDispatcher("/views/admin/edit-category.jsp");
 			dispatcher.forward(req, resp);
 		} else {
-			//Không có quyền chỉnh sửa
+			// Không có quyền chỉnh sửa
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền chỉnh sửa category này!");
 		}
 	}
@@ -192,11 +193,11 @@ public class CategoryController extends HttpServlet {
 		HttpSession session = req.getSession();
 		Category category = cateService.findById(Integer.parseInt(id));
 		Users currrentUser = (Users) session.getAttribute("USERMODEL");
-		
-		if(id != null && category.getUser().getId() == currrentUser.getId()) {
-		cateService.delete(Integer.parseInt(id));
-		resp.sendRedirect(req.getContextPath() + "/admin/home");}
-		else {
+
+		if (id != null && category.getUser().getId() == currrentUser.getId()) {
+			cateService.delete(Integer.parseInt(id));
+			resp.sendRedirect(req.getContextPath() + "/admin/home");
+		} else {
 			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền xóa category này!");
 		}
 	}
