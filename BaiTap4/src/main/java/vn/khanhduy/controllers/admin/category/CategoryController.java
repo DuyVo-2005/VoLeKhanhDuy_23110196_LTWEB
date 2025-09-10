@@ -7,6 +7,7 @@ import java.util.List;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,8 +20,9 @@ import vn.khanhduy.entities.Users;
 import vn.khanhduy.services.ICategoryService;
 import vn.khanhduy.services.impl.CategoryServiceImpl;
 import vn.khanhduy.utils.Constant;
+import vn.khanhduy.utils.SessionUtil;
 
-@WebServlet(urlPatterns = { "/admin/home", "/admin/add", "/admin/edit", "/admin/delete"})
+@WebServlet(urlPatterns = { "/admin/home", "/admin/add", "/admin/edit", "/admin/delete" })
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
 		maxFileSize = 1024 * 1024 * 10, // 10MB
 		maxRequestSize = 1024 * 1024 * 50)
@@ -36,11 +38,11 @@ public class CategoryController extends HttpServlet {
 		 * req.getServletPath() -> /admin/add
 		 */
 		String path = req.getServletPath();// hoặc req.getRequestURI()
-		if (path == "/admin/add") {
+		if (path.startsWith("/admin/add")) {
 			doGetAdd(req, resp);
-		} else if (path == "/admin/edit") {
+		} else if (path.startsWith("/admin/edit")) {
 			doGetEdit(req, resp);
-		} else if (path == "/admin/delete") {
+		} else if (path.startsWith("/admin/delete")) {
 			doGetDelete(req, resp);
 		} else {
 			doGetList(req, resp);
@@ -50,9 +52,9 @@ public class CategoryController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String path = req.getServletPath();
-		if (path == "/admin/add") {
+		if (path.startsWith("/admin/add")) {
 			doPostAdd(req, resp);
-		} else if (path == "/admin/edit") {
+		} else if (path.startsWith("/admin/edit")) {
 			doPostEdit(req, resp);
 		}
 	}
@@ -124,11 +126,22 @@ public class CategoryController extends HttpServlet {
 	}
 
 	protected void doGetEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
 		String id = req.getParameter("id");
+		HttpSession session = req.getSession();
+		Users currentUser = (Users) session.getAttribute("USERMODEL");//user đang login
+		//Users currentUser = (Users) SessionUtil.getInstance().getValue(req, "USERMODEL");
+
 		Category category = cateService.findById(Integer.parseInt(id));
-		req.setAttribute("category", category);
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/views/admin/edit-category.jsp");
-		dispatcher.forward(req, resp);
+
+		if (category != null && category.getUser().getId() == currentUser.getId()) {
+			req.setAttribute("category", category);
+			RequestDispatcher dispatcher = req.getRequestDispatcher("/views/admin/edit-category.jsp");
+			dispatcher.forward(req, resp);
+		} else {
+			//Không có quyền chỉnh sửa
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền chỉnh sửa category này!");
+		}
 	}
 
 	protected void doPostEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -176,8 +189,16 @@ public class CategoryController extends HttpServlet {
 
 	protected void doGetDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String id = req.getParameter("id");
+		HttpSession session = req.getSession();
+		Category category = cateService.findById(Integer.parseInt(id));
+		Users currrentUser = (Users) session.getAttribute("USERMODEL");
+		
+		if(id != null && category.getUser().getId() == currrentUser.getId()) {
 		cateService.delete(Integer.parseInt(id));
-		resp.sendRedirect(req.getContextPath() + "/admin/home");
+		resp.sendRedirect(req.getContextPath() + "/admin/home");}
+		else {
+			resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền xóa category này!");
+		}
 	}
 
 }

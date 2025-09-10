@@ -12,5 +12,6 @@ public interface ICategoryDao {
 	Category findByName(String name);
 	List<Category> getAll();
 	List<Category> getAllForManager(int id);
+	boolean hasPrivilege(int id);
 	List<Category> search(String keyword);
 }

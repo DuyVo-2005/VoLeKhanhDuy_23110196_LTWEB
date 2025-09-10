@@ -102,8 +102,10 @@ public class HomeController extends HttpServlet {
 			// Nếu chưa có session:
 			// - true - tạo mới một session rồi trả về
 			// - false -> không tạo mới, mà trả về null
+			//SessionUtil.getInstance().setValue(req, "USERMODEL", loginUser);
+			session.setAttribute("USERMODEL", loginUser);
 			session.setAttribute("account", user);
-			SessionUtil.getInstance().setValue(req, "USERMODEL", loginUser);
+			
 			
 			if (isRememberMe) {
 				saveRemeberMe(resp, username);

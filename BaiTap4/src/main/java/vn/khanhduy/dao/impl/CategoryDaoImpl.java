@@ -138,4 +138,10 @@ public class CategoryDaoImpl implements ICategoryDao {
 			enma.close();
 		}
 	}
+
+	@Override
+	public boolean hasPrivilege(int id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

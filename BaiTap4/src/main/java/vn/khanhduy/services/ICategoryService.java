@@ -14,4 +14,5 @@ public interface ICategoryService {
 	List<Category> getAll();
 	List<Category> getAllForManager(int id);
 	List<Category> search(String keyword);
+	boolean hasPrivilege(int id);
 }

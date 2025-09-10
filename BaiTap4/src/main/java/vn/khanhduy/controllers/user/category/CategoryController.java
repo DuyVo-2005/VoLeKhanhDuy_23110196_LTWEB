@@ -36,11 +36,11 @@ public class CategoryController extends HttpServlet{
 		 * req.getServletPath() -> /admin/add
 		 */
 		String path = req.getServletPath();// hoặc req.getRequestURI()
-		if (path == "/user/add") {
+		if (path.startsWith("/user/add")) {
 			doGetAdd(req, resp);
-		} else if (path == "/user/edit") {
+		} else if (path.startsWith("/user/edit")) {
 			doGetEdit(req, resp);
-		} else if (path == "/user/delete") {
+		} else if (path.startsWith("/user/delete")) {
 			doGetDelete(req, resp);
 		} else {
 			doGetList(req, resp);
@@ -50,9 +50,9 @@ public class CategoryController extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String path = req.getServletPath();
-		if (path == "/user/add") {
+		if (path.startsWith("/user/add")) {
 			doPostAdd(req, resp);
-		} else if (path == "/user/edit") {
+		} else if (path.startsWith("/user/edit")) {
 			doPostEdit(req, resp);
 		}
 	}

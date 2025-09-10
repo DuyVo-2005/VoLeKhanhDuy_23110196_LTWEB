@@ -61,4 +61,9 @@ public class CategoryServiceImpl implements ICategoryService {
 	public List<Category> search(String keyword) {
 		return categoryDao.search(keyword);//seacch catename
 	}
+
+	@Override
+	public boolean hasPrivilege(int id) {
+		return false;
+	}
 }
