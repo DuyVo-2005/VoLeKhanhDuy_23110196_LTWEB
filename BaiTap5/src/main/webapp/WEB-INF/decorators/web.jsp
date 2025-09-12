@@ -5,13 +5,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>User tab</title>
 
 </head>
 <body>
 	<%@ include file="/commons/header.jsp"%>
 	<hr>
 	<sitemesh:write property="body" />
-
 </body>
 </html>

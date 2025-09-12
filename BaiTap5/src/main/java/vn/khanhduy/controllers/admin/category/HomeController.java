@@ -9,13 +9,19 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = { "/admin/home" })
+@WebServlet(urlPatterns = { "/admin/home", "/web/home" })
 public class HomeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/admin/home.jsp");
+		RequestDispatcher dispatcher = null;
+		if("/web/home".equals(req.getServletPath())) {//luu y ko dung == do ko ep kieu string
+			dispatcher = req.getRequestDispatcher("/web/home.jsp");
+		}
+		else {
+			dispatcher = req.getRequestDispatcher("/admin/home.jsp");
+		}
 		dispatcher.forward(req, resp);
 	}
 

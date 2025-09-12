@@ -9,11 +9,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import vn.khanhduy.dao.impl.UserDaoImpl;
 import vn.khanhduy.entity.Users;
-import vn.khanhduy.services.IUserService;
+import vn.khanhduy.dao.IUserDao;
 import vn.khanhduy.services.impl.UserServiceImpl;
+import vn.khanhduy.services.IUserService;
 import vn.khanhduy.utils.Constant;
 
 @WebServlet(urlPatterns = { "/admin/edit" })
@@ -26,8 +27,7 @@ public class UserController extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-			doGetEdit(req, resp);
-		
+		doGetEdit(req, resp);
 	}
 
 	@Override
@@ -41,11 +41,23 @@ public class UserController extends HttpServlet {
 
 	protected void doGetEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		String id = req.getParameter("id");
-		HttpSession session = req.getSession();
-		Users currentUser = (Users) session.getAttribute("USERMODEL");// user đang login
+		/*
+		 * String id = req.getParameter("id"); HttpSession session = req.getSession();
+		 * Users currentUser = (Users) session.getAttribute("USERMODEL");// user đang
+		 * login
+		 */
+		
+		// Fix cứng user id = 1
+	    int id = 1;
 
-		RequestDispatcher dispatcher = req.getRequestDispatcher("/views/admin/edit-category.jsp");
+	    IUserDao userDao = new UserDaoImpl();
+	    // Lấy user từ DB (giả sử bạn có UserDAO)
+	    Users user = userDao.findById(id);
+
+	    // Đẩy dữ liệu sang JSP
+	    req.setAttribute("users", user);
+
+		RequestDispatcher dispatcher = req.getRequestDispatcher("/admin/edit-user.jsp");
 		dispatcher.forward(req, resp);
 	}
 
@@ -56,11 +68,19 @@ public class UserController extends HttpServlet {
 			req.setCharacterEncoding("UTF-8");
 
 			// Lấy id từ form
-			int id = Integer.parseInt(req.getParameter("id"));
+			//int id = Integer.parseInt(req.getParameter("id"));
+			int id = 1;
 
 			// Lấy category cũ từ DB
 			Users user = userService.findById(id);
-			// Cập nhật tên mới
+			
+			String fullname = req.getParameter("fullname");
+		    String phone = req.getParameter("phone");
+		    
+		    user.setFullname(fullname);
+		    user.setPhone(phone);
+		    
+		    Part filePart = req.getPart("image");
 
 			// Upload file mới nếu có
 			String fileName = "";

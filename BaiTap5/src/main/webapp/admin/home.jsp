@@ -2,4 +2,4 @@
     pageEncoding="UTF-8"%>
 
 	<h1>Nội dung trang chủ admin</h1>
-	<a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
+	<a href="${pageContext.request.contextPath}/admin/edit">Chỉnh sửa</a>
